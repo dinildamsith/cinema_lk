@@ -14,6 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import ThemeToggle from "./ThemeToggle";
 
 const drawerWidth = 240;
 const navItems = ['Home', 'About', 'Contact'];
@@ -49,7 +50,7 @@ function DrawerAppBar(props) {
     return (
         <Box sx={{ display: 'flex'}}>
             <CssBaseline />
-            <AppBar component="nav" sx={{backgroundColor: "#15393d"}}>
+            <AppBar component="nav">
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -73,6 +74,7 @@ function DrawerAppBar(props) {
                             </Button>
                         ))}
                     </Box>
+                    <ThemeToggle/>
                 </Toolbar>
             </AppBar>
             <nav>
