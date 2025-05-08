@@ -1,16 +1,11 @@
 import './App.css';
-import {Button, Typography} from "@mui/material";
+import MainLayout from "./layouts/MainLayout";
 
 function App() {
   return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <Typography variant="h4" gutterBottom>
-              MUI is working!
-          </Typography>
-          <Button variant="contained" color="primary">
-              Click Me
-          </Button>
-      </div>
+      <MainLayout>
+          <h1>H</h1>
+      </MainLayout>
   );
 }
 
