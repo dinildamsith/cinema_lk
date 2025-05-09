@@ -9,6 +9,7 @@ function TrendingMovie() {
     const [allTrendingMovies, setAllTrendingMovies] = useState([]);
 
     const handelTrendingMovieGet = async () => {
+        setLoading(true);        // Start loading
         const options = {
             method: 'GET',
             headers: {
@@ -17,10 +18,15 @@ function TrendingMovie() {
             }
         };
 
-        fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US', options)
-            .then(res => res.json())
-            .then(res => setAllTrendingMovies(res.results)) // ✅ Only set the movie list
-            .catch(err => console.error(err));
+        try {
+            const res = await fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US', options);
+            const data = await res.json();
+            setAllTrendingMovies(data.results);
+        } catch (err) {
+            console.error('Error fetching trending movies:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
 
@@ -34,6 +40,13 @@ function TrendingMovie() {
 
     return (
         <MainLayout>
+            {loading && (
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
+                </div>
+            )}
+
+
             <div className="flex flex-col lg:flex-row gap-4 p-4">
                 {/* Left Side – Filters */}
                 <aside className="w-full lg:w-1/4 bg-gray-100 dark:bg-gray-800 p-4 rounded">
