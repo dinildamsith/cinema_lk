@@ -14,6 +14,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Link } from 'react-router-dom';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -62,12 +63,14 @@ export default function MovieCard() {
                 title="Shrimp and Chorizo Paella"
                 subheader="September 14, 2016"
             />
+            <Link to="/movies">
             <CardMedia
                 component="img"
                 height="194"
                 image="https://media.assettype.com/newindianexpress%2F2024-05%2F829c5e53-1d2e-4869-a512-83b32a541eed%2Fhitlist.jpg?w=1024&auto=format%2Ccompress&fit=max"
 
             />
+            </Link>
             <CardContent>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     This impressive paella is a perfect party dish and a fun meal to cook
