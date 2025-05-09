@@ -17,7 +17,7 @@ export default function MovieCard({ allMovies }) {
         <>
             {allMovies?.map((movie) => (
                 <Card key={movie.id} sx={{ maxWidth: 225, m: 1 }}>
-                    <Link to="/movies">
+                    <Link to={`/movieDetails/${movie.id}`} >
                         <CardMedia
                             component="img"
                             height="194"

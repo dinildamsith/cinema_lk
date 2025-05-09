@@ -1,15 +1,58 @@
 import { FaHeart, FaBookmark, FaBars, FaPlay } from "react-icons/fa";
 import MainLayout from "../layouts/MainLayout";
+import {useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 
 const MovieDetailsView = () => {
+
+    const { id } = useParams();
+    const [loading, setLoading] = useState(false);
+    const [movieDetails, setMovieDetails] = useState({});
+
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NjEzNmZkNjc2MTNlY2RiYjY4MDI2MzdmNjIzZWFmOCIsIm5iZiI6MTc0NjcyODQ2Ny4yNzgsInN1YiI6IjY4MWNmNjEzMzhkNTEyZWZhZGIxY2FhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OPQgXPjc5CbMOYxxfZ1aYimZCbGbfpwmavzep_tDvd0'
+        }
+    };
+
+
+    const getMovieDetails = async () => {
+        try {
+            setLoading(true);        // Start loading
+            const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options);
+            const data = await res.json();
+            console.log(data);
+            setMovieDetails(data);   // Set movie details
+        } catch (err) {
+            console.error('Error fetching movie details:', err);
+        }
+        finally {
+            setLoading(false);       // Stop loading
+        }
+    }
+
+    useEffect(() => {
+        getMovieDetails().then(() => console.log("Movie details fetched successfully"));
+    }, []);
+
     return (
         <MainLayout>
+
+            {loading && (
+                <div className="fixed inset-0 z-50 bg-white bg-opacity-70 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
+                </div>
+            )}
+
+
             <div className="text-gray-900 dark:text-white bg-white dark:bg-gray-900 -mt-12">
                 {/* Background Banner */}
                 <div
-                    className="relative h-auto min-h-[400px] bg-cover bg-center"
+                    className="relative h-auto min-h-[400px]  bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('https://media.assettype.com/newindianexpress%2F2024-05%2F829c5e53-1d2e-4869-a512-83b32a541eed%2Fhitlist.jpg')`,
+                        backgroundImage: `url('https://image.tmdb.org/t/p/w500${movieDetails.backdrop_path}')`,
                     }}
                 >
                     <div className="absolute inset-0 bg-black bg-opacity-60 dark:bg-opacity-60"></div>
@@ -17,7 +60,7 @@ const MovieDetailsView = () => {
                     <div className="relative z-10 flex flex-wrap md:flex-nowrap items-center h-full px-4 md:px-20 py-10 gap-8">
                         {/* Movie Poster */}
                         <img
-                            src="https://media.assettype.com/newindianexpress%2F2024-05%2F829c5e53-1d2e-4869-a512-83b32a541eed%2Fhitlist.jpg"
+                            src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
                             alt="Movie Poster"
                             className="w-full max-w-[160px] h-auto aspect-[2/3] rounded-lg object-cover shadow-lg"
                         />
@@ -25,25 +68,42 @@ const MovieDetailsView = () => {
                         {/* Movie Info */}
                         <div className="flex flex-col flex-1 gap-3 min-w-0">
                             <h1 className="text-2xl md:text-4xl font-bold break-words text-gray-300 dark:text-gray-400">
-                                Exterritorial <span className="text-gray-300 dark:text-gray-400 text-xl">(2025)</span>
+                                {movieDetails.original_title} <span
+                                className="text-gray-300 dark:text-gray-400 text-xl">({movieDetails.release_date})</span>
                             </h1>
+                            {
+                                movieDetails.genres?.map((genre, index) => (
+                                    <span key={genre.id}
+                                          className="text-sm md:text-base text-gray-300 dark:text-gray-400">
+            {genre.name}{index < movieDetails.genres.length - 1 ? ', ' : ''}
+        </span>
+                                ))
+                            }
+
                             <p className="text-sm md:text-base text-gray-300 dark:text-gray-400">
-                                Thriller, Action • 1h 49m
+                                {movieDetails.runtime} min | {movieDetails.release_date} | {movieDetails.tagline}
                             </p>
-                            <p className="text-yellow-500 font-semibold text-lg">⭐ 67%</p>
+                            {/*<p className="text-sm md:text-base text-gray-300 dark:text-gray-400">*/}
+                            {/*    {movieDetails?.origin_country[0] || "Unknown"} | {movieDetails.status || "Unknown"}*/}
+                            {/*</p>*/}
+                            <p className="text-yellow-500 font-semibold text-lg">⭐ {movieDetails.popularity}</p>
 
                             <div className="flex flex-wrap gap-3 mt-2">
-                                <button className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                                    <FaBars />
+                                <button
+                                    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                                    <FaBars/>
                                 </button>
-                                <button className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-red-500 transition">
-                                    <FaHeart />
+                                <button
+                                    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-red-500 transition">
+                                    <FaHeart/>
                                 </button>
-                                <button className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-blue-500 transition">
-                                    <FaBookmark />
+                                <button
+                                    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-blue-500 transition">
+                                    <FaBookmark/>
                                 </button>
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2 transition">
-                                    <FaPlay /> Play Trailer
+                                <button
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2 transition">
+                                    <FaPlay/> Play Trailer
                                 </button>
                             </div>
                         </div>
@@ -54,34 +114,58 @@ const MovieDetailsView = () => {
                 <div className="px-4 md:px-20 py-6">
                     <h2 className="text-xl font-semibold mb-2">Overview</h2>
                     <p className="text-gray-800 dark:text-gray-300 mb-4 text-justify">
-                        When her son vanishes inside a US consulate, ex-special forces soldier Sara does everything in
-                        her power to find him — and uncovers a dark conspiracy.
+                        {
+                            movieDetails.overview
+                        }
                     </p>
-                    <p className="text-gray-700 dark:text-gray-400">
-                        Christian Zübert — <span className="italic">Director, Writer</span>
-                    </p>
+                    {/*<p className="text-gray-700 dark:text-gray-400">*/}
+                    {/*    Christian Zübert — <span className="italic">Director, Writer</span>*/}
+                    {/*</p>*/}
                 </div>
 
                 {/* Cast */}
                 <div className="px-4 md:px-20 py-4">
-                    <h2 className="text-xl font-semibold mb-4">Top Billed Cast</h2>
+                    <h2 className="text-xl font-semibold mb-4">Production companies</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                        {[...Array(6)].map((_, idx) => (
-                            <div
-                                key={idx}
-                                className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md"
-                            >
-                                <img
-                                    src="https://media.assettype.com/newindianexpress%2F2024-05%2F829c5e53-1d2e-4869-a512-83b32a541eed%2Fhitlist.jpg"
-                                    alt="Actor"
-                                    className="w-full h-48 object-cover"
-                                />
-                                <div className="p-3">
-                                    <h3 className="text-base font-semibold truncate">Actor Name</h3>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">Character Name</p>
-                                </div>
-                            </div>
-                        ))}
+                        {
+                        movieDetails.production_companies?.map((company) => (
+                            <>
+                                    <div
+                                        className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md"
+                                    >
+                                        <img
+                                            src={
+                                                company.logo_path
+                                                    ? `https://image.tmdb.org/t/p/w500${company.logo_path}`
+                                                    : "https://static.vecteezy.com/system/resources/previews/054/264/361/large_2x/document-damage-icon-glyph-icon-for-your-website-mobile-presentation-and-logo-design-vector.jpg"
+                                            }
+                                            alt="Actor"
+                                            className="w-full h-48 object-cover"
+                                        />
+                                        <div className="p-3">
+                                            <h3 className="text-base font-semibold truncate">{company.name}</h3>
+                                            {/*<p className="text-sm text-gray-600 dark:text-gray-400 truncate">{company.name}</p>*/}
+                                        </div>
+                                    </div>
+                            </>
+                        ))
+                        }
+                        {/*{[...Array(6)].map((_, idx) => (*/}
+                        {/*    <div*/}
+                        {/*        key={idx}*/}
+                        {/*        className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md"*/}
+                        {/*    >*/}
+                        {/*        <img*/}
+                        {/*            src="https://media.assettype.com/newindianexpress%2F2024-05%2F829c5e53-1d2e-4869-a512-83b32a541eed%2Fhitlist.jpg"*/}
+                        {/*            alt="Actor"*/}
+                        {/*            className="w-full h-48 object-cover"*/}
+                        {/*        />*/}
+                        {/*        <div className="p-3">*/}
+                        {/*            <h3 className="text-base font-semibold truncate">Actor Name</h3>*/}
+                        {/*            <p className="text-sm text-gray-600 dark:text-gray-400 truncate">Character Name</p>*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*))}*/}
                     </div>
                 </div>
             </div>
