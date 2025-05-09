@@ -6,7 +6,7 @@ function MainLayout({ children }) {
 
           <DrawerAppBar/>
 
-          <main className="flex-grow">
+          <main className="flex-grow mt-28">
               {children}
           </main>
 

@@ -1,11 +1,9 @@
 import './App.css';
-import MainLayout from "./layouts/MainLayout";
+import HomePage from "./pages/Home";
 
 function App() {
   return (
-      <MainLayout>
-          <h1>H</h1>
-      </MainLayout>
+      <HomePage/>
   );
 }
 
