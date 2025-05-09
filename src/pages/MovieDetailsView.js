@@ -183,13 +183,9 @@ const MovieDetailsView = () => {
                 {/* credits */}
                 <div>
                     <CastCarousel movieCredits={movieCredits}/>
-
-                </div>
-
-                <div>
                     <CrewCarousel movieCredits={movieCredits}/>
-
                 </div>
+
 
                 {/* companies */}
                 <div className="px-4 md:px-20 py-4">
