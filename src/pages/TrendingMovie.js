@@ -2,7 +2,7 @@ import MainLayout from "../layouts/MainLayout";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import MovieCard from "../components/MovieCard";
 
-function HomePage() {
+function TrendingMovie() {
     return (
         <MainLayout>
             <div className="flex flex-col lg:flex-row gap-4 p-4">
@@ -38,7 +38,7 @@ function HomePage() {
                     <div className="flex flex-col gap-4">
                         {/* Top Section with Heading and Search */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">All Movies</h2>
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white"> Trending Movies</h2>
                             <div className="relative w-full sm:max-w-xs sm:ml-auto sm:mr-0">
                                 <input
                                     type="text"
@@ -65,4 +65,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+export default TrendingMovie

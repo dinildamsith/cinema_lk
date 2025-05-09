@@ -15,9 +15,13 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ThemeToggle from "./ThemeToggle";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
-const navItems = ['Home', 'About', 'Contact'];
+const navItems = [
+    {path:"/", name:"Home"},
+    {path: "/trending", name: "Trending"},
+];
 
 function DrawerAppBar(props) {
     const { window } = props;
@@ -35,11 +39,13 @@ function DrawerAppBar(props) {
             <Divider />
             <List>
                 {navItems.map((item) => (
-                    <ListItem key={item} disablePadding>
-                        <ListItemButton sx={{ textAlign: 'center' }}>
-                            <ListItemText primary={item} />
-                        </ListItemButton>
-                    </ListItem>
+                    <Link to={item.path}>
+                        <ListItem key={item.name} disablePadding>
+                            <ListItemButton sx={{ textAlign: 'center' }}>
+                                <ListItemText primary={item.name} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Link>
                 ))}
             </List>
         </Box>
@@ -69,9 +75,11 @@ function DrawerAppBar(props) {
                     </Typography>
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         {navItems.map((item) => (
-                            <Button key={item} sx={{ color: '#fff', fontWeight:400 }} >
-                                {item}
-                            </Button>
+                            <Link to={item.path}>
+                                <Button key={item.name} sx={{ color: '#fff', fontWeight:400 }} >
+                                    {item.name}
+                                </Button>
+                            </Link>
                         ))}
                     </Box>
                     <ThemeToggle/>
