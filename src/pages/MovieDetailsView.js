@@ -2,6 +2,8 @@ import { FaHeart, FaBookmark, FaBars, FaPlay } from "react-icons/fa";
 import MainLayout from "../layouts/MainLayout";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
+import CastCarousel from "../components/Cast";
+import CrewCarousel from "../components/Crew";
 
 const MovieDetailsView = () => {
 
@@ -10,6 +12,7 @@ const MovieDetailsView = () => {
     const [movieDetails, setMovieDetails] = useState({});
     const [showTrailer, setShowTrailer] = useState(false);
     const [trailerKey, setTrailerKey] = useState(null);
+    const [movieCredits, setMovieCredits] = useState({});
 
     const options = {
         method: 'GET',
@@ -19,6 +22,20 @@ const MovieDetailsView = () => {
         }
     };
 
+    const getCredits = async () => {
+        setLoading(true);        // Start loading
+
+        try {
+            const res = await fetch(`https://api.themoviedb.org/3/movie/${id}/credits?language=en-US`, options);
+            const data = await res.json();
+            console.log(data);
+            setMovieCredits(data);   // Set movie credits
+        } catch (err) {
+            console.error('Error fetching credits:', err);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const getMovieDetails = async () => {
         try {
@@ -27,6 +44,7 @@ const MovieDetailsView = () => {
             const data = await res.json();
             console.log(data);
             setMovieDetails(data);   // Set movie details
+
         } catch (err) {
             console.error('Error fetching movie details:', err);
         }
@@ -59,6 +77,7 @@ const MovieDetailsView = () => {
     useEffect(() => {
         getMovieDetails().then(() => console.log("Movie details fetched successfully"));
         getMovieVideos().then(() => console.log("Movie videos fetched successfully"));
+        getCredits().then(() => console.log("Movie credits fetched successfully"));
     }, []);
 
     return (
@@ -81,7 +100,8 @@ const MovieDetailsView = () => {
                 >
                     <div className="absolute inset-0 bg-black bg-opacity-60 dark:bg-opacity-60"></div>
 
-                    <div className="relative z-10 flex flex-wrap md:flex-nowrap items-center h-full px-4 md:px-20 py-10 gap-8">
+                    <div
+                        className="relative z-10 flex flex-wrap md:flex-nowrap items-center h-full px-4 md:px-20 py-10 gap-8">
                         {/* Movie Poster */}
                         <img
                             src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
@@ -130,14 +150,14 @@ const MovieDetailsView = () => {
                                         onClick={() => setShowTrailer(true)}
                                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2 transition"
                                     >
-                                        <FaPlay /> Play Trailer
+                                        <FaPlay/> Play Trailer
                                     </button>
                                 ) : (
                                     <button
                                         disabled
                                         className="bg-gray-400 text-white px-4 py-2 rounded flex items-center gap-2 cursor-not-allowed"
                                     >
-                                        <FaPlay className="opacity-60" /> No Trailer Available
+                                        <FaPlay className="opacity-60"/> No Trailer Available
                                     </button>
                                 )}
 
@@ -160,13 +180,24 @@ const MovieDetailsView = () => {
                     {/*</p>*/}
                 </div>
 
-                {/* Cast */}
+                {/* credits */}
+                <div>
+                    <CastCarousel movieCredits={movieCredits}/>
+
+                </div>
+
+                <div>
+                    <CrewCarousel movieCredits={movieCredits}/>
+
+                </div>
+
+                {/* companies */}
                 <div className="px-4 md:px-20 py-4">
                     <h2 className="text-xl font-semibold mb-4">Production companies</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                         {
-                        movieDetails.production_companies?.map((company) => (
-                            <>
+                            movieDetails.production_companies?.map((company) => (
+                                <>
                                     <div
                                         className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md"
                                     >
@@ -184,25 +215,9 @@ const MovieDetailsView = () => {
                                             {/*<p className="text-sm text-gray-600 dark:text-gray-400 truncate">{company.name}</p>*/}
                                         </div>
                                     </div>
-                            </>
-                        ))
+                                </>
+                            ))
                         }
-                        {/*{[...Array(6)].map((_, idx) => (*/}
-                        {/*    <div*/}
-                        {/*        key={idx}*/}
-                        {/*        className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-md"*/}
-                        {/*    >*/}
-                        {/*        <img*/}
-                        {/*            src="https://media.assettype.com/newindianexpress%2F2024-05%2F829c5e53-1d2e-4869-a512-83b32a541eed%2Fhitlist.jpg"*/}
-                        {/*            alt="Actor"*/}
-                        {/*            className="w-full h-48 object-cover"*/}
-                        {/*        />*/}
-                        {/*        <div className="p-3">*/}
-                        {/*            <h3 className="text-base font-semibold truncate">Actor Name</h3>*/}
-                        {/*            <p className="text-sm text-gray-600 dark:text-gray-400 truncate">Character Name</p>*/}
-                        {/*        </div>*/}
-                        {/*    </div>*/}
-                        {/*))}*/}
                     </div>
                 </div>
             </div>
