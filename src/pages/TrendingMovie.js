@@ -1,8 +1,37 @@
 import MainLayout from "../layouts/MainLayout";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import MovieCard from "../components/MovieCard";
+import {useEffect, useState} from "react";
 
 function TrendingMovie() {
+
+    const [loading, setLoading] = useState(false);
+    const [allTrendingMovies, setAllTrendingMovies] = useState([]);
+
+    const handelTrendingMovieGet = async () => {
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NjEzNmZkNjc2MTNlY2RiYjY4MDI2MzdmNjIzZWFmOCIsIm5iZiI6MTc0NjcyODQ2Ny4yNzgsInN1YiI6IjY4MWNmNjEzMzhkNTEyZWZhZGIxY2FhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OPQgXPjc5CbMOYxxfZ1aYimZCbGbfpwmavzep_tDvd0'
+            }
+        };
+
+        fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US', options)
+            .then(res => res.json())
+            .then(res => setAllTrendingMovies(res.results)) // ✅ Only set the movie list
+            .catch(err => console.error(err));
+    };
+
+
+    useEffect(() => {
+        console.log(allTrendingMovies)
+    }, [allTrendingMovies]);
+
+    useEffect(() => {
+        handelTrendingMovieGet().then(() => console.log("Trending movies fetched successfully"));
+    }, []);
+
     return (
         <MainLayout>
             <div className="flex flex-col lg:flex-row gap-4 p-4">
@@ -52,11 +81,7 @@ function TrendingMovie() {
 
                         {/* Movie Grid */}
                         <div className="flex flex-wrap gap-5">
-                            <MovieCard/>
-                            <MovieCard/>
-                            <MovieCard/>
-                            <MovieCard/>
-                            <MovieCard/>
+                            <MovieCard allMovies={allTrendingMovies}/>
                         </div>
                     </div>
                 </main>
