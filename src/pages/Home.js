@@ -7,7 +7,7 @@ import {Chip} from "@mui/material";
 function HomePage() {
 
     const [loading, setLoading] = useState(false);
-    const [allTrendingMovies, setAllTrendingMovies] = useState([]);
+    const [allMovies, setAllMovies] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
 
     const options = {
@@ -33,13 +33,14 @@ function HomePage() {
 
     }
 
-    const handelTrendingMovieGet = async () => {
+    const allMovieGet = async () => {
         setLoading(true);        // Start loading
 
         try {
-            const res = await fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US', options);
+            const res = await fetch('https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc', options);
             const data = await res.json();
-            setAllTrendingMovies(data.results);
+            console.log(data);
+            setAllMovies(data.results);
         } catch (err) {
             console.error('Error fetching trending movies:', err);
         } finally {
@@ -57,7 +58,7 @@ function HomePage() {
         try {
             const res = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchTerm}`, options)
             const data = await res.json();
-            setAllTrendingMovies(data.results);
+            setAllMovies(data.results);
         } catch (err) {
             console.error('Error fetching search results:', err);
         } finally {
@@ -72,11 +73,11 @@ function HomePage() {
     };
 
     useEffect(() => {
-        console.log(allTrendingMovies)
-    }, [allTrendingMovies]);
+        console.log(allMovies)
+    }, [allMovies]);
 
     useEffect(() => {
-        handelTrendingMovieGet().then(() => console.log("Trending movies fetched successfully"));
+        allMovieGet().then(() => console.log("all movies fetched successfully"));
         getGenre().then(() => console.log("Genres fetched successfully"));
     }, []);
 
@@ -127,7 +128,7 @@ function HomePage() {
 
                         {/* Movie Grid */}
                         <div className="flex flex-wrap gap-5">
-                            <MovieCard allMovies={allTrendingMovies}/>
+                            <MovieCard allMovies={allMovies}/>
                         </div>
                     </div>
                 </main>
