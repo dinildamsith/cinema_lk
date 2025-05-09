@@ -8,15 +8,16 @@ function TrendingMovie() {
     const [loading, setLoading] = useState(false);
     const [allTrendingMovies, setAllTrendingMovies] = useState([]);
 
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NjEzNmZkNjc2MTNlY2RiYjY4MDI2MzdmNjIzZWFmOCIsIm5iZiI6MTc0NjcyODQ2Ny4yNzgsInN1YiI6IjY4MWNmNjEzMzhkNTEyZWZhZGIxY2FhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OPQgXPjc5CbMOYxxfZ1aYimZCbGbfpwmavzep_tDvd0'
+        }
+    };
+
     const handelTrendingMovieGet = async () => {
         setLoading(true);        // Start loading
-        const options = {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NjEzNmZkNjc2MTNlY2RiYjY4MDI2MzdmNjIzZWFmOCIsIm5iZiI6MTc0NjcyODQ2Ny4yNzgsInN1YiI6IjY4MWNmNjEzMzhkNTEyZWZhZGIxY2FhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OPQgXPjc5CbMOYxxfZ1aYimZCbGbfpwmavzep_tDvd0'
-            }
-        };
 
         try {
             const res = await fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US', options);
@@ -29,6 +30,23 @@ function TrendingMovie() {
         }
     };
 
+    const serchInput = async (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+
+        setLoading(true);        // Start loading
+
+        try {
+            const res = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchTerm}`, options)
+            const data = await res.json();
+            setAllTrendingMovies(data.results);
+        } catch (err) {
+            console.error('Error fetching search results:', err);
+        } finally {
+            setLoading(false);
+        }
+
+        console.log(searchTerm)
+    }
 
     useEffect(() => {
         console.log(allTrendingMovies)
@@ -41,7 +59,7 @@ function TrendingMovie() {
     return (
         <MainLayout>
             {loading && (
-                <div className="flex justify-center items-center h-64">
+                <div className="fixed inset-0 z-50 bg-white bg-opacity-70 flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
                 </div>
             )}
@@ -85,6 +103,7 @@ function TrendingMovie() {
                                 <input
                                     type="text"
                                     placeholder="Search movies..."
+                                    onChange={(e) => serchInput(e)}
                                     className="w-full pl-10 pr-4 py-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600"
                                 />
                                 <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 dark:text-gray-300 absolute left-3 top-2.5" />
