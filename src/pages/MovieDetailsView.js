@@ -8,6 +8,8 @@ const MovieDetailsView = () => {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [movieDetails, setMovieDetails] = useState({});
+    const [showTrailer, setShowTrailer] = useState(false);
+    const [trailerKey, setTrailerKey] = useState(null);
 
     const options = {
         method: 'GET',
@@ -33,8 +35,30 @@ const MovieDetailsView = () => {
         }
     }
 
+    const getMovieVideos = async () => {
+        try {
+            setLoading(true);        // Start loading
+            const res = await fetch(`https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`, options);
+            const data = await res.json();
+            console.log(data);
+            const trailer = data.results.find(video => video.type === 'Trailer');
+            if (trailer) {
+                setTrailerKey(trailer.key); // Set trailer key
+            } else {
+                console.log("No trailer found");
+                setTrailerKey(null); // Set trailer key to null if not found
+            }
+        } catch (err) {
+            console.error('Error fetching movie videos:', err);
+        }
+        finally {
+            setLoading(false);       // Stop loading
+        }
+    }
+
     useEffect(() => {
         getMovieDetails().then(() => console.log("Movie details fetched successfully"));
+        getMovieVideos().then(() => console.log("Movie videos fetched successfully"));
     }, []);
 
     return (
@@ -101,10 +125,23 @@ const MovieDetailsView = () => {
                                     className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-blue-500 transition">
                                     <FaBookmark/>
                                 </button>
-                                <button
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2 transition">
-                                    <FaPlay/> Play Trailer
-                                </button>
+                                {trailerKey ? (
+                                    <button
+                                        onClick={() => setShowTrailer(true)}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2 transition"
+                                    >
+                                        <FaPlay /> Play Trailer
+                                    </button>
+                                ) : (
+                                    <button
+                                        disabled
+                                        className="bg-gray-400 text-white px-4 py-2 rounded flex items-center gap-2 cursor-not-allowed"
+                                    >
+                                        <FaPlay className="opacity-60" /> No Trailer Available
+                                    </button>
+                                )}
+
+
                             </div>
                         </div>
                     </div>
@@ -169,6 +206,30 @@ const MovieDetailsView = () => {
                     </div>
                 </div>
             </div>
+
+            {showTrailer && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg w-[90%] max-w-2xl relative">
+                        <button
+                            onClick={() => setShowTrailer(false)}
+                            className="absolute top-0 right-1 text-black dark:text-white text-xl font-bold"
+                        >
+                            &times;
+                        </button>
+                        <div className="aspect-w-16 aspect-h-9">
+                            <iframe
+                                width="100%"
+                                height="400"
+                                src={`https://www.youtube.com/embed/${trailerKey}`}
+                                title="Trailer"
+                                frameBorder="0"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </MainLayout>
     );
 };
