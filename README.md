@@ -1,7 +1,3 @@
-Here is a more creative version of the README file, now with some added emojis to make it more engaging:
-
----
-
 # 🎬 **Movie Explorer – Discover Your Favorite Films** 🎥
 
 Welcome to the **Movie Explorer App**! 🌟 This web application allows users to search for movies, view detailed information about them, and discover trending films. It fetches real-time data from the TMDb (The Movie Database) API. 🚀
