@@ -16,6 +16,7 @@ const MovieDetailsView = () => {
     const [movieCredits, setMovieCredits] = useState({});
     const [movieFavourite, setMovieFavourite] = useState({});
 
+    //--------- fetch options
     const options = {
         method: 'GET',
         headers: {
@@ -24,6 +25,7 @@ const MovieDetailsView = () => {
         }
     };
 
+    //--------- get credits ( crew & cast )
     const getCredits = async () => {
         setLoading(true);        // Start loading
 
@@ -39,6 +41,7 @@ const MovieDetailsView = () => {
         }
     }
 
+    //--------- get movie details
     const getMovieDetails = async () => {
         try {
             setLoading(true);        // Start loading
@@ -55,6 +58,7 @@ const MovieDetailsView = () => {
         }
     }
 
+    //--------- get movie videos
     const getMovieVideos = async () => {
         try {
             setLoading(true);        // Start loading
@@ -76,6 +80,7 @@ const MovieDetailsView = () => {
         }
     }
 
+    //--------- handle favourite movie
     const handelFavouriteMovie = async (movie) => {
         const existing = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
 
@@ -91,6 +96,7 @@ const MovieDetailsView = () => {
         }
     }
 
+    //--------- check if movie is in local storage
     const checkMovieInLocalStorage = async () => {
         const existing = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
         console.log("Existing favorites:", existing);
@@ -101,7 +107,7 @@ const MovieDetailsView = () => {
         setMovieFavourite({ isFavourite: isAlreadyFavorite });
     };
 
-
+    //--------- handle remove from local storage
     const handleRemoveFromLocalStorage = async (movie) => {
         const existing = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
 
@@ -117,8 +123,7 @@ const MovieDetailsView = () => {
         }
     }
 
-
-
+    //--------- useEffect to fetch data on component mount
     useEffect(() => {
         getMovieDetails().then(() => console.log("Movie details fetched successfully"));
         getMovieVideos().then(() => console.log("Movie videos fetched successfully"));
@@ -173,16 +178,13 @@ const MovieDetailsView = () => {
                             <p className="text-sm md:text-base text-gray-300 dark:text-gray-400">
                                 {movieDetails.runtime} min | {movieDetails.release_date} | {movieDetails.tagline}
                             </p>
-                            {/*<p className="text-sm md:text-base text-gray-300 dark:text-gray-400">*/}
-                            {/*    {movieDetails?.origin_country[0] || "Unknown"} | {movieDetails.status || "Unknown"}*/}
-                            {/*</p>*/}
                             <p className="text-yellow-500 font-semibold text-lg">⭐ {movieDetails.popularity}</p>
 
                             <div className="flex flex-wrap gap-3 mt-2">
-                                <button
-                                    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                                    <FaBars/>
-                                </button>
+                                {/*<button*/}
+                                {/*    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">*/}
+                                {/*    <FaBars/>*/}
+                                {/*</button>*/}
                                 {
                                     movieFavourite?.isFavourite ? (
                                         <button
@@ -198,15 +200,6 @@ const MovieDetailsView = () => {
                                         </button>
                                     )
                                 }
-                                {/*<button*/}
-                                {/*    onClick={() => handelFavouriteMovie(movieDetails)}*/}
-                                {/*    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-red-500 transition">*/}
-                                {/*    <FaHeart/>*/}
-                                {/*</button>*/}
-                                <button
-                                    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-blue-500 transition">
-                                    <FaBookmark/>
-                                </button>
                                 {trailerKey ? (
                                     <button
                                         onClick={() => setShowTrailer(true)}

@@ -10,6 +10,7 @@ function HomePage() {
     const [allMovies, setAllMovies] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
 
+    //-----------fetch option
     const options = {
         method: 'GET',
         headers: {
@@ -18,6 +19,7 @@ function HomePage() {
         }
     };
 
+    //-----------fetch all genres
     const getGenre = async () => {
         setLoading(true);
         try {// Start loading
@@ -33,6 +35,7 @@ function HomePage() {
 
     }
 
+    //-----------fetch all movies
     const allMovieGet = async () => {
         setLoading(true);        // Start loading
 
@@ -48,8 +51,7 @@ function HomePage() {
         }
     };
 
-
-
+    //-----------search input function
     const serchInput = async (e) => {
         const searchTerm = e.target.value.toLowerCase();
 
@@ -68,19 +70,7 @@ function HomePage() {
         console.log(searchTerm)
     }
 
-    // const options = {
-    //     method: 'GET',
-    //     headers: {
-    //         accept: 'application/json',
-    //         Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NjEzNmZkNjc2MTNlY2RiYjY4MDI2MzdmNjIzZWFmOCIsIm5iZiI6MTc0NjcyODQ2Ny4yNzgsInN1YiI6IjY4MWNmNjEzMzhkNTEyZWZhZGIxY2FhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OPQgXPjc5CbMOYxxfZ1aYimZCbGbfpwmavzep_tDvd0'
-    //     }
-    // };
-    //
-    // fetch('https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&with_genres=28', options)
-    //     .then(res => res.json())
-    //     .then(res => console.log(res))
-    //     .catch(err => console.error(err));
-
+    //-----------fetch movies by genre
     const handleClick = async (genre) => {
         if (genre === 0) {
             allMovieGet().then(() => console.log("all movies fetched successfully"));
@@ -99,10 +89,8 @@ function HomePage() {
         }
     };
 
-    useEffect(() => {
-        console.log(allMovies)
-    }, [allMovies]);
 
+    //-----------page mount time call functions
     useEffect(() => {
         allMovieGet().then(() => console.log("all movies fetched successfully"));
         getGenre().then(() => console.log("Genres fetched successfully"));

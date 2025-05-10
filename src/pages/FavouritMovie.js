@@ -9,25 +9,15 @@ function FavouriteMovie() {
 
     const [loading, setLoading] = useState(false);
     const [allFavMovies, setAllFavMovies] = useState([]);
-    const [allGenres, setAllGenres] = useState([]);
 
-    const options = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NjEzNmZkNjc2MTNlY2RiYjY4MDI2MzdmNjIzZWFmOCIsIm5iZiI6MTc0NjcyODQ2Ny4yNzgsInN1YiI6IjY4MWNmNjEzMzhkNTEyZWZhZGIxY2FhNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.OPQgXPjc5CbMOYxxfZ1aYimZCbGbfpwmavzep_tDvd0'
-        }
-    };
-
-
-
+    //---------local storage in favourite movies get
     const getFavoriteMovie = async () => {
         const movies = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
         setAllFavMovies(movies);
         console.log(movies)
     }
 
-
+    //--------search input function
     const serchInput = async (e) => {
         if (e.target.value === "") {
             getFavoriteMovie().then(() => console.log("Favorite movies fetched successfully"));
@@ -41,12 +31,7 @@ function FavouriteMovie() {
         console.log(filteredMovies)
     }
 
-
-
-    useEffect(() => {
-        console.log(allFavMovies)
-    }, [allFavMovies]);
-
+    //-------page mount time call functions
     useEffect(() => {
         getFavoriteMovie().then(() => console.log("Favorite movies fetched successfully"));
     }, []);

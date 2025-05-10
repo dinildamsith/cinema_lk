@@ -11,6 +11,7 @@ function TrendingMovie() {
     const [allTrendingMovies, setAllTrendingMovies] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
 
+    //-----------fetch option
     const options = {
         method: 'GET',
         headers: {
@@ -19,6 +20,7 @@ function TrendingMovie() {
         }
     };
 
+    //-----------fetch all genres
     const getGenre = async () => {
         setLoading(true);
         try {// Start loading
@@ -34,6 +36,7 @@ function TrendingMovie() {
 
     }
 
+    //-----------fetch all trending movies
     const handelTrendingMovieGet = async () => {
         setLoading(true);        // Start loading
 
@@ -48,8 +51,7 @@ function TrendingMovie() {
         }
     };
 
-
-
+    //-----------search input function
     const serchInput = async (e) => {
         const searchTerm = e.target.value.toLowerCase();
 
@@ -68,6 +70,7 @@ function TrendingMovie() {
         console.log(searchTerm)
     }
 
+    //-----------fetch movies by genre
     const handleClick = async (genre) => {
         if (genre === 0) {
             handelTrendingMovieGet().then(() => console.log("all movies fetched successfully"));
@@ -86,10 +89,7 @@ function TrendingMovie() {
         }
     };
 
-    useEffect(() => {
-        console.log(allTrendingMovies)
-    }, [allTrendingMovies]);
-
+    //-------page mount time call functions
     useEffect(() => {
         handelTrendingMovieGet().then(() => console.log("Trending movies fetched successfully"));
         getGenre().then(() => console.log("Genres fetched successfully"));
