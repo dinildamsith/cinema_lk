@@ -21,6 +21,7 @@ const drawerWidth = 240;
 const navItems = [
     {path:"/", name:"Home"},
     {path: "/trending", name: "Trending"},
+    {path: "/favorites", name: "Favorites"},
 ];
 
 function DrawerAppBar(props) {
