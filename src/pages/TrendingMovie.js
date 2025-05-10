@@ -68,8 +68,22 @@ function TrendingMovie() {
         console.log(searchTerm)
     }
 
-    const handleClick = () => {
-        console.info('You clicked the Chip.');
+    const handleClick = async (genre) => {
+        if (genre === 0) {
+            handelTrendingMovieGet().then(() => console.log("all movies fetched successfully"));
+
+        } else {
+            try {
+                setLoading(true);        // Start loading
+                const res = await fetch(`https://api.themoviedb.org/3/discover/movie?with_genres=${genre}`, options);
+                const data = await res.json();
+                setAllTrendingMovies(data.results);
+            } catch (err) {
+                console.error('Error fetching movies by genre:', err);
+            } finally {
+                setLoading(false);
+            }
+        }
     };
 
     useEffect(() => {
@@ -99,9 +113,10 @@ function TrendingMovie() {
 
                     <h6 className="text-gray-700 dark:text-gray-300 mb-2">Genres</h6>
                     <div className="flex flex-wrap gap-2">
+                        <Chip  label={"All"} onClick={() => handleClick(0)}/>
                         {
                             allGenres.map((genre) => (
-                                <Chip key={genre.id} label={genre.name} onClick={() => handleClick(genre)}/>
+                                <Chip key={genre.id} label={genre.name} onClick={() => handleClick(genre.id)}/>
                             ))
                         }
                     </div>
