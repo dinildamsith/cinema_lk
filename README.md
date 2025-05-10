@@ -140,27 +140,3 @@ Each movie poster or result links to the detailed view with additional informati
 1. **Unit Testing**: Add tests for components using Jest and React Testing Library.
 2. **Deployment**: Deploy the app to Vercel or Netlify by following their instructions. Make sure to add your `.env` file to the deployment platform.
 
----
-
-## 📜 **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🤝 **Contributions**
-
-We welcome contributions to enhance the app further! If you'd like to contribute, feel free to fork the repository and submit a pull request.
-
----
-
-## 📬 **Contact**
-
-For more information, you can reach out via:
-
-* **Email**: [info@loonslab.com](mailto:info@loonslab.com)
-* **Phone**: (+94) 71 248 7141
-
----
-
-This README is designed to provide a comprehensive yet creative overview of your Movie Explorer app. The added emojis make it more fun and engaging for developers to interact with. 🎉
