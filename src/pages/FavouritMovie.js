@@ -8,7 +8,7 @@ import {Label} from "@mui/icons-material";
 function FavouriteMovie() {
 
     const [loading, setLoading] = useState(false);
-    const [allTrendingMovies, setAllTrendingMovies] = useState([]);
+    const [allFavMovies, setAllFavMovies] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
 
     const options = {
@@ -19,80 +19,36 @@ function FavouriteMovie() {
         }
     };
 
-    const getGenre = async () => {
-        setLoading(true);
-        try {// Start loading
-            const res = await fetch('https://api.themoviedb.org/3/genre/movie/list?language=en', options);
-            const data = await res.json();
-            console.log(data.genres);
-            setAllGenres(data.genres);
-        } catch (err) {
-            console.error('Error fetching genres:', err);
-        } finally {
-            setLoading(false);
-        }
 
+
+    const getFavoriteMovie = async () => {
+        const movies = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
+        setAllFavMovies(movies);
+        console.log(movies)
     }
-
-    const handelTrendingMovieGet = async () => {
-        // setLoading(true);        // Start loading
-        //
-        // try {
-        //     const res = await fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US', options);
-        //     const data = await res.json();
-        //     setAllTrendingMovies(data.results);
-        // } catch (err) {
-        //     console.error('Error fetching trending movies:', err);
-        // } finally {
-        //     setLoading(false);
-        // }
-    };
-
 
 
     const serchInput = async (e) => {
-        // const searchTerm = e.target.value.toLowerCase();
-        //
-        // setLoading(true);        // Start loading
-        //
-        // try {
-        //     const res = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchTerm}`, options)
-        //     const data = await res.json();
-        //     setAllTrendingMovies(data.results);
-        // } catch (err) {
-        //     console.error('Error fetching search results:', err);
-        // } finally {
-        //     setLoading(false);
-        // }
-        //
-        // console.log(searchTerm)
+        if (e.target.value === "") {
+            getFavoriteMovie().then(() => console.log("Favorite movies fetched successfully"));
+            return;
+        }
+        const searchTerm = e.target.value.toLowerCase();
+        const filteredMovies = allFavMovies.filter((movie) =>
+            movie.original_title.toLowerCase().includes(searchTerm)
+        );
+        setAllFavMovies(filteredMovies);
+        console.log(filteredMovies)
     }
 
-    const handleClick = async (genre) => {
-        // if (genre === 0) {
-        //     handelTrendingMovieGet().then(() => console.log("all movies fetched successfully"));
-        //
-        // } else {
-        //     try {
-        //         setLoading(true);        // Start loading
-        //         const res = await fetch(`https://api.themoviedb.org/3/discover/movie?with_genres=${genre}`, options);
-        //         const data = await res.json();
-        //         setAllTrendingMovies(data.results);
-        //     } catch (err) {
-        //         console.error('Error fetching movies by genre:', err);
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // }
-    };
+
 
     useEffect(() => {
-        console.log(allTrendingMovies)
-    }, [allTrendingMovies]);
+        console.log(allFavMovies)
+    }, [allFavMovies]);
 
     useEffect(() => {
-        handelTrendingMovieGet().then(() => console.log("Trending movies fetched successfully"));
-        getGenre().then(() => console.log("Genres fetched successfully"));
+        getFavoriteMovie().then(() => console.log("Favorite movies fetched successfully"));
     }, []);
 
     return (
@@ -103,52 +59,28 @@ function FavouriteMovie() {
                 </div>
             )}
 
-
-            <div className="flex flex-col lg:flex-row gap-4 p-4">
-                {/* Left Side – Filters */}
-                {/* Left Side – Filters */}
-                <aside className="w-full lg:w-1/4 bg-gray-100 dark:bg-gray-800 p-4 rounded">
-                    <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">Filter Movies</h2>
-
-
-                    <h6 className="text-gray-700 dark:text-gray-300 mb-2">Genres</h6>
-                    <div className="flex flex-wrap gap-2">
-                        <Chip  label={"All"} onClick={() => handleClick(0)}/>
-                        {
-                            allGenres.map((genre) => (
-                                <Chip key={genre.id} label={genre.name} onClick={() => handleClick(genre.id)}/>
-                            ))
-                        }
+            <div className="flex flex-col gap-4 p-4">
+                {/* Search Bar Top Right */}
+                <div className="flex justify-end">
+                    <div className="relative w-full sm:w-80">
+                        <input
+                            type="text"
+                            placeholder="Search movies..."
+                            onChange={(e) => serchInput(e)}
+                            className="w-full pl-10 pr-4 py-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                        />
+                        <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 dark:text-gray-300 absolute left-3 top-2.5" />
                     </div>
-                </aside>
+                </div>
 
-
-                {/* Right Side – Movie Cards */}
-                <main className="w-full lg:w-3/4">
-                    <div className="flex flex-col gap-4">
-                        {/* Top Section with Heading and Search */}
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Favorite Movies</h2>
-                            <div className="relative w-full sm:max-w-xs sm:ml-auto sm:mr-0">
-                                <input
-                                    type="text"
-                                    placeholder="Search movies..."
-                                    onChange={(e) => serchInput(e)}
-                                    className="w-full pl-10 pr-4 py-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                                />
-                                <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 dark:text-gray-300 absolute left-3 top-2.5" />
-                            </div>
-                        </div>
-
-
-                        {/* Movie Grid */}
-                        <div className="flex flex-wrap gap-5">
-                            <MovieCard allMovies={allTrendingMovies}/>
-                        </div>
-                    </div>
-                </main>
+                {/* Movie Cards */}
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Favorite Movies</h2>
+                <div className="flex flex-wrap gap-5">
+                    <MovieCard allMovies={allFavMovies} />
+                </div>
             </div>
         </MainLayout>
+
     );
 }
 

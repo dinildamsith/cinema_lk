@@ -5,6 +5,8 @@ import MovieDetailsView from "./pages/MovieDetailsView";
 import TrendingMovie from "./pages/TrendingMovie";
 import FavouriteMovie from "./pages/FavouritMovie";
 
+
+
 function App() {
     return (
         <BrowserRouter>

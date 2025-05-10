@@ -1,9 +1,10 @@
-import { FaHeart, FaBookmark, FaBars, FaPlay } from "react-icons/fa";
+import {FaHeart, FaBookmark, FaBars, FaPlay, FaHome} from "react-icons/fa";
 import MainLayout from "../layouts/MainLayout";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import CastCarousel from "../components/Cast";
 import CrewCarousel from "../components/Crew";
+import {toast} from "react-toastify";
 
 const MovieDetailsView = () => {
 
@@ -13,6 +14,7 @@ const MovieDetailsView = () => {
     const [showTrailer, setShowTrailer] = useState(false);
     const [trailerKey, setTrailerKey] = useState(null);
     const [movieCredits, setMovieCredits] = useState({});
+    const [movieFavourite, setMovieFavourite] = useState({});
 
     const options = {
         method: 'GET',
@@ -74,10 +76,54 @@ const MovieDetailsView = () => {
         }
     }
 
+    const handelFavouriteMovie = async (movie) => {
+        const existing = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
+
+        // Check if movie already exists
+        const isAlreadyFavorited = existing.some(item => item.id === movie.id);
+
+        if (!isAlreadyFavorited) {
+            existing.push(movie);
+            localStorage.setItem("favouriteMovie", JSON.stringify(existing));
+            toast.success(`${movie.title} added to favorites!`);
+        } else {
+            toast.warn(`${movie.title} is already in favorites.`);
+        }
+    }
+
+    const checkMovieInLocalStorage = async () => {
+        const existing = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
+        console.log("Existing favorites:", existing);
+        console.log("Checking for ID:", id);
+
+        const isAlreadyFavorite = existing.some(item => item.id == id);
+
+        setMovieFavourite({ isFavourite: isAlreadyFavorite });
+    };
+
+
+    const handleRemoveFromLocalStorage = async (movie) => {
+        const existing = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
+
+        // Check if movie already exists
+        const isAlreadyFavorited = existing.some(item => item.id === movie.id);
+
+        if (isAlreadyFavorited) {
+            const updatedMovies = existing.filter(item => item.id !== movie.id);
+            localStorage.setItem("favouriteMovie", JSON.stringify(updatedMovies));
+            toast.success(`${movie.title} removed from favorites!`);
+        } else {
+            toast.warn(`${movie.title} is not in favorites.`);
+        }
+    }
+
+
+
     useEffect(() => {
         getMovieDetails().then(() => console.log("Movie details fetched successfully"));
         getMovieVideos().then(() => console.log("Movie videos fetched successfully"));
         getCredits().then(() => console.log("Movie credits fetched successfully"));
+        checkMovieInLocalStorage().then(() => console.log("Movie in local storage checked successfully"));
     }, []);
 
     return (
@@ -137,10 +183,26 @@ const MovieDetailsView = () => {
                                     className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition">
                                     <FaBars/>
                                 </button>
-                                <button
-                                    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-red-500 transition">
-                                    <FaHeart/>
-                                </button>
+                                {
+                                    movieFavourite?.isFavourite ? (
+                                        <button
+                                            onClick={() => handleRemoveFromLocalStorage(movieDetails)}
+                                            className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-red-500 transition">
+                                            <FaHeart className="text-red-500"/>
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => handelFavouriteMovie(movieDetails)}
+                                            className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-red-500 transition">
+                                            <FaHeart/>
+                                        </button>
+                                    )
+                                }
+                                {/*<button*/}
+                                {/*    onClick={() => handelFavouriteMovie(movieDetails)}*/}
+                                {/*    className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-red-500 transition">*/}
+                                {/*    <FaHeart/>*/}
+                                {/*</button>*/}
                                 <button
                                     className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-blue-500 transition">
                                     <FaBookmark/>
